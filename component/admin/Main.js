@@ -9,6 +9,7 @@ import Check_in from './Check_in'
 import Approve_user from './Approve_user'
 import Employee_status from './Employee_status'
 import Team from './Team'
+import AddTeam from './AddTeam'
 
 
 const Drawer =createDrawerNavigator()
@@ -37,6 +38,7 @@ export default function App() {
         name='Team'
         component={ Team}
         />
+        
         <Drawer.Screen
         name='Report'
         component={ Report}

@@ -5,25 +5,29 @@ import { StyleSheet, Text, View,SafeAreaView,TextInput,Button } from 'react-nati
 
 export default function Signup({navigation}) {
  
-    const [fullName,setFullName]=useState('')
-    const [email,setEmail]=useState('')
-  const handlePress=()=>{
-    navigation.navigate('Login')
-  }
+    const [TeamName,setTeamName]=useState('')
+    const [Role,setRole]=useState('')
+    const [currentDate, setCurrentDate] = useState('');
 
-const startScan=()=>{
-  navigation.navigate('FingerScanComponent')
-}
+    const reg = () => {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = date.getMonth() + 1;
+        const day = date.getDate();
+        const formattedDate = `${month}-${day}-${year}`;
+        setCurrentDate(formattedDate);
+      };
 
- 
- 
+
+
+
+
   const  handleReg=()=>{
 
 
-    axios.post('http://192.168.43.188:8000/register', {
-      fullName: fullName,
-      email: email,
-      
+    axios.post('http://192.168.43.164:8000/team', {
+        TeamName: TeamName,
+        Role: Role,
     })
       .then(response => {
         console.log('Success:', response.data);
@@ -37,29 +41,18 @@ const startScan=()=>{
   return (
    
     <SafeAreaView style={styles.container}>
-    <View style={styles.box}>
-    <Button title='login' onPress={handlePress}/>
-      <View style={styles.wel}>
-      <Text style={styles.text}>WELCOME BACK !</Text></View>
-      
-      </View>
-      
     <View style={styles.input}>
       
         
-      <Text style={styles.text1}>fullName </Text>
-      <TextInput style={styles.inputs} onChangeText={(e)=>setFullName(e)} value={fullName}/>
-      <Text style={styles.text1}>Email</Text>
-      <TextInput style={styles.inputs} onChangeText={(e)=>setEmail(e)} value={email}/>
+      <Text style={styles.text1}>TeamName</Text>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setTeamName(e)} value={TeamName}/>
+      <Text style={styles.text1}>Role</Text>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setRole(e)} value={Role}/>
+      <Button title='Add' onPress={()=>handleReg()} />
       
-      <View style={styles.finger}>
-      <Button title='scann' onPress={startScan}/>
-      </View>
-      <View style={styles.finger}>
-      <Button title='register' onPress={()=>handleReg()} />
-      </View>
+       
     </View>
-   
+    
     </SafeAreaView>
     
   );
@@ -94,7 +87,6 @@ flex:2,
 
   },
   inputs:{
-   
     backgroundColor: '#ffffff',
     borderColor: '#000000',
     borderWidth: 1,

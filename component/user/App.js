@@ -7,10 +7,6 @@ import Login from './component/Login'
 import Home from './component/Home';
 import Main from './component/admin/Main'
 import AddTeam from './component/admin/AddTeam'
-
-
-
-
 const Stack =createStackNavigator()
 export default function App() {
   return (
@@ -39,7 +35,6 @@ export default function App() {
         component={AddTeam}
         
         />
-      
       </Stack.Navigator>
     </NavigationContainer>
   );
