@@ -7,10 +7,11 @@ import Login from './component/Login'
 import Home from './component/Home';
 import Main from './component/admin/Main'
 import AddTeam from './component/admin/AddTeam'
-
-
-
-
+import Role from './component/Role'
+import EmployeePage from './component/user/EmployeePage'
+import PresentToday from './component/admin/PresentToday';
+import AddPermission from './component/user/AddPermission';
+import UserMain from './component/user/UserMain'
 const Stack =createStackNavigator()
 export default function App() {
   return (
@@ -23,7 +24,15 @@ export default function App() {
         />
          <Stack.Screen
         name='Login'
-        component={ Login}
+        component={Login}
+        />
+         <Stack.Screen
+        name='UserMain'
+        component={ UserMain}
+        />
+         <Stack.Screen
+        name='Role'
+        component={ Role}
         />
         <Stack.Screen
         name='Signup'
@@ -32,6 +41,18 @@ export default function App() {
         <Stack.Screen
         name='Main'
         component={ Main}
+      
+        />
+        
+        <Stack.Screen
+        name='EmployeePage'
+        component={ EmployeePage}
+        
+        />
+
+       <Stack.Screen
+        name='AddPermission'
+        component={ AddPermission}
         
         />
          <Stack.Screen
@@ -39,7 +60,11 @@ export default function App() {
         component={AddTeam}
         
         />
-      
+         <Stack.Screen
+        name='PresentToday'
+        component={ PresentToday}
+        />
+         
       </Stack.Navigator>
     </NavigationContainer>
   );

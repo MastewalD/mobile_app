@@ -5,32 +5,19 @@ import { StyleSheet, Text, View,SafeAreaView,TextInput,Button } from 'react-nati
 
 export default function Signup({navigation}) {
  
-    const [TeamName,setTeamName]=useState('')
-    const [Role,setRole]=useState('')
-    const [currentDate, setCurrentDate] = useState('');
-
-    const reg = () => {
-        const date = new Date();
-        const year = date.getFullYear();
-        const month = date.getMonth() + 1;
-        const day = date.getDate();
-        const formattedDate = `${month}-${day}-${year}`;
-        setCurrentDate(formattedDate);
-      };
-
-
-
-
-
+    const [team_name,setTeamName]=useState('')
+    const [team_role,setRole]=useState('')
+    
   const  handleReg=()=>{
 
 
-    axios.post('http://192.168.43.164:8000/team', {
-        TeamName: TeamName,
-        Role: Role,
+    axios.post('http://192.168.241.164:8000/team', {
+      team_name: team_name,
+      team_role: team_role,
     })
       .then(response => {
         console.log('Success:', response.data);
+        navigation.navigate('Dashboard')
       })
       .catch(error => {
         console.error('Error:', error);
@@ -45,9 +32,9 @@ export default function Signup({navigation}) {
       
         
       <Text style={styles.text1}>TeamName</Text>
-      <TextInput style={styles.inputs} onChangeText={(e)=>setTeamName(e)} value={TeamName}/>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setTeamName(e)} value={team_name}/>
       <Text style={styles.text1}>Role</Text>
-      <TextInput style={styles.inputs} onChangeText={(e)=>setRole(e)} value={Role}/>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setRole(e)} value={team_role}/>
       <Button title='Add' onPress={()=>handleReg()} />
       
        

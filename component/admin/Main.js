@@ -10,16 +10,18 @@ import Approve_user from './Approve_user'
 import Employee_status from './Employee_status'
 import Team from './Team'
 import AddTeam from './AddTeam'
+import Finger from './Finger'
 
 
 const Drawer =createDrawerNavigator()
 export default function App() {
+  
   return (
     
       <Drawer.Navigator>
 
         <Drawer.Screen
-        name='Dashboard'
+        name='dashboard'
         component={ Dashboard}
         />
         <Drawer.Screen
@@ -39,9 +41,15 @@ export default function App() {
         component={ Team}
         />
         
+      
+
         <Drawer.Screen
         name='Report'
         component={ Report}
+        />
+         <Drawer.Screen
+        name='Finger'
+        component={ Finger}
         />
          <Drawer.Screen
         name='Log_out'

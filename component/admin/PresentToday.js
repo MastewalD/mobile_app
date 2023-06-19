@@ -3,10 +3,10 @@ import axios from 'axios'
 import { StyleSheet, Text, View,Button ,FlatList} from 'react-native';
 import React,{useState,useEffect} from 'react';
 import { Table,  Row, Rows} from 'react-native-table-component';
-export default function Team({navigation}) {
+export default function PresentToday({navigation}) {
   const [Data, setData] = useState([]);
   useEffect(() => {
-    axios.get('http://192.168.12.164:8000/login')
+    axios.get('http://192.168.88.164:8000/total_present_employee')
       .then((response) => {
         setData(response.data);
       })
@@ -14,16 +14,14 @@ export default function Team({navigation}) {
         console.error(error);
       });
   }, []);
-  const handlePress=()=>{
-  navigation.navigate('Dashboard')
-   }
+ 
   return (
     <View style={styles.container} >
-       <Button title='Add Team' onPress={handlePress} style={styles.button}/>
+      
     
       <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-  <Row data={['team_name', 'team_role']}  style={styles.head}  textStyle={styles.text}/>
-  <Rows data={Data.map(row => [row.team_name, row.team_role])} textStyle={styles.text}/>
+  <Row data={['total_no_users_on_work']}  style={styles.head} />
+  <Rows data={Data.map(row => [ row.total_no_users_on_work])} style={styles.text}/>
 </Table>
       <StatusBar style="auto" />
     </View>

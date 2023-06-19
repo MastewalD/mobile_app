@@ -11,7 +11,7 @@ const db=mysql.createPool({
     host:"localhost",
     user:"root",
     password: "kidist123@mysql",
-     database:"android_attendancedb"
+     database:"fingerprint_attendacedb"
 })
 
 app.use(cors(
@@ -31,9 +31,9 @@ app.use(bodyparser.urlencoded({extended:true}))
 
 
 app.post("/register",(req,res)=>{
-    const { fullName,email,fingerPrint}=req.body
-    const sqlpost="INSERT INTO reg(  fullName,email,fingerPrint)VALUES(?,?,?)"
-    db.query(sqlpost,[fullName,email,fingerPrint],(err,result)=>{
+    const { full_name,email}=req.body
+    const sqlpost="INSERT INTO registration(  full_name,email)VALUES(?,?)"
+    db.query(sqlpost,[full_name,email],(err,result)=>{
 
         if(err){
             console.log(err)
@@ -43,31 +43,20 @@ app.post("/register",(req,res)=>{
     })
 })
 
+app.post("/date",(req,res)=>{
+  const { full_name}=req.body
+  const date = new Date();
 
+  
 
-app.post('/login', (req, res) => {
-  const { fullName} = req.body;
-  if (!fullName) {
-    return res.status(400).json({ message: 'Invalid input' });
-  }
-  db.query(`SELECT * FROM reg WHERE fullName='${fullName}'`, (err, results) => {
-    if (err) throw err;
-    if (results.length > 0) {
-      
-      const token = jwt.sign({ fullName: fullName }, 'your-secret-key');
-      res.json({ access_token: token });
-      
-    } else {
-      res.status(401).send('Incorrect fullName');
-    }
-  });
-});
+const hour = date.getHours() % 12 || 12;
+const minutes = String(date.getMinutes()).padStart(2, '0');
+const seconds = String(date.getSeconds()).padStart(2, '0');
+const period = date.getHours() >= 12 ? 'PM' : 'AM';
 
-
-app.post("/team",(req,res)=>{
-  const { TeamName,Role}=req.body
-  const sqlpost="INSERT INTO team(TeamName,Role)VALUES(?,?)"
-  db.query(sqlpost,[TeamName,Role],(err,result)=>{
+const time_in = `${hour}:${minutes}:${seconds} ${period}`
+  const sqlpost="INSERT INTO login(  full_name,date,time_in)VALUES(?,?,?)"
+  db.query(sqlpost,[full_name,date,time_in],(err,result)=>{
 
       if(err){
           console.log(err)
@@ -76,13 +65,63 @@ app.post("/team",(req,res)=>{
       }
   })
 })
-app.get("/reg",(req,res)=>{
-  const sqlGet="SELECT * FROM reg"
-  db.query(sqlGet,(err,result)=>{
-      res.json(result)
+
+app.post("/permission",(req,res)=>{
+  const {  full_name, reason, starting_date, ending_date}=req.body
+  const sqlpost="INSERT INTO registration(  full_name, reason, starting_date, ending_date)VALUES(?,?,?,?)"
+  db.query(sqlpost,[full_name, reason, starting_date, ending_date],(err,result)=>{
+
+      if(err){
+          console.log(err)
+      }else{
+          res.send(result)
+      }
   })
 })
 
+
+app.post('/login', (req, res) => {
+  const { full_name} = req.body;
+  
+  if (!full_name) {
+    return res.status(400).json({ message: 'Invalid input' });
+  }
+  db.query(`SELECT * FROM registration WHERE full_name='${full_name}'`, (err, results) => {
+    if (err) throw err;
+    if (results.length > 0) {
+      
+      role=results[0].role
+      const token = jwt.sign({ full_name,role}, 'your-secret-key');
+      res.json({ token });
+      
+    } else {
+      res.status(401).send('Incorrect full_name');
+    }
+  });
+});
+
+
+
+app.post('/fingerprint', async (req, res) => {
+  const { fingerprintId } = req.body;
+  const { userId } = req.session;
+
+  const [result, fields] = await connection.execute('INSERT INTO fingerprint (user_id, fingerprint_id) VALUES (?, ?)', [userId, fingerprintId]);
+
+  res.json({ success: true });
+});
+app.post("/team",(req,res)=>{
+  const { team_name,team_role}=req.body
+  const sqlpost="INSERT INTO team(team_name,team_role)VALUES(?,?)"
+  db.query(sqlpost,[team_name,team_role],(err,result)=>{
+
+      if(err){
+          console.log(err)
+      }else{
+          res.send(result)
+      }
+  })
+})
 app.get("/team",(req,res)=>{
     const sqlGet="SELECT * FROM team"
     db.query(sqlGet,(err,result)=>{
@@ -90,25 +129,48 @@ app.get("/team",(req,res)=>{
     })
 })
 
-
-
-app.post('/fingerprint', (req, res) => {
-  const fingerprintData = req.body;
-  connection.query('INSERT INTO template SET ?', fingerprintData, (err, results, fields) => {
-    if (err) {
-      console.error('Error inserting fingerprint data', err);
-      res.status(500).send('Error registering fingerprint');
-      return;
-    }
-
-    console.log('Fingerprint data inserted successfully');
-    res.status(200).send('Fingerprint registered successfully');
-  });
+app.get("/count_employee",(req,res)=>{
+  const sqlGet="SELECT COUNT(DISTINCT registrationID)Total_No_of_user FROM registration;"
+  db.query(sqlGet,(err,result)=>{
+      res.json(result)
+  })
 })
-app.post('/logout', (req, res) => {
-  const access_token = req.body.access_token;
+app.get("/total_no_presents",(req,res)=>{
+  const sqlGet="SELECT COUNT(DISTINCT registrationID)total_no_users_on_work FROM login WHERE DATE (date) = CURDATE();"
+  db.query(sqlGet,(err,result)=>{
+      res.json(result)
+  })
+})
+app.get("/total_present_employee",(req,res)=>{
+  const sqlGet="SELECT distinct  full_name total_no_users_on_work FROM login WHERE DATE (date) = CURDATE();"
+  db.query(sqlGet,(err,result)=>{
+      res.json(result)
+  })
+})
 
-  res.status(200).send('Logged out successfully');
+
+
+app.post('/logout', (req, res) => {
+  const { full_name}=req.body
+  const date = new Date();
+
+  
+
+const hour = date.getHours() % 12 || 12;
+const minutes = String(date.getMinutes()).padStart(2, '0');
+const seconds = String(date.getSeconds()).padStart(2, '0');
+const period = date.getHours() >= 12 ? 'PM' : 'AM';
+
+const time_out = `${hour}:${minutes}:${seconds} ${period}`
+  const sqlpost="INSERT INTO logout(  full_name,date,time_out)VALUES(?,?,?)"
+  db.query(sqlpost,[full_name,date,time_out],(err,result)=>{
+
+      if(err){
+          console.log(err)
+      }else{
+          res.send(result)
+      }
+  })
 });
 
 app.listen(8000,()=>{

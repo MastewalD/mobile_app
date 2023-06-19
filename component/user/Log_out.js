@@ -13,7 +13,7 @@ const full_name='Maste'
       const response = await axios.post('http://192.168.88.164:8000/logout', {
         full_name:full_name
       });
-      navigation.navigate('Login')
+      navigation.navigate('Signup')
      
     } catch (error) {
       console.error(error);
@@ -29,7 +29,7 @@ const full_name='Maste'
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text style={{ fontSize: 20, marginBottom: 20 }}>Profile</Text>
-      {error && <Text style={{ color: 'red', marginBottom: 10 }}>{error}</Text>}
+     
       <Button title="Log out" onPress={handleLogout} />
     </View>
   );

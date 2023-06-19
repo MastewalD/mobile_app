@@ -3,57 +3,50 @@ import axios from 'axios'
 import React,{useState} from 'react';
 import { StyleSheet, Text, View,SafeAreaView,TextInput,Button } from 'react-native';
 
-export default function Signup({navigation}) {
- 
+export default function AddPermission({navigation}) {
+    
     const [full_name,setFullName]=useState('')
-    const [email,setEmail]=useState('')
-  
+    const [reason,setReason]=useState('')
+    const [starting_date,setStarting_date]=useState('')
+    const [ending_date,setEnding_date]=useState('')
   const  handleReg=()=>{
 
 
-    axios.post('http://192.168.88.164:8000/register', {
-      full_name: full_name,
-      email: email,
-      
+    axios.post('http://192.168.241.164:8000/permission', {
+        full_name: full_name,
+        reason: reason,
+        starting_date:starting_date,
+        ending_date:ending_date
     })
       .then(response => {
         console.log('Success:', response.data);
+        navigation.navigate('Dashboard')
       })
       .catch(error => {
         console.error('Error:', error);
       });
 
     }
-    const handleClick=()=>{
-      navigation.navigate('Login')
-    }
 
   return (
    
     <SafeAreaView style={styles.container}>
-    <View style={styles.box}>
-    
-    
-      <Button style={styles.button} title='WELCOME BACK !'/>
-      
-      </View>
-      
     <View style={styles.input}>
       
-        
-      <Text style={styles.text1}>fullName </Text>
+    
+      <Text style={styles.text1}>full_name</Text>
       <TextInput style={styles.inputs} onChangeText={(e)=>setFullName(e)} value={full_name}/>
-      <Text style={styles.text1}>Email</Text>
-      <TextInput style={styles.inputs} onChangeText={(e)=>setEmail(e)} value={email}/>
+      <Text style={styles.text1}>reason</Text>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setReason(e)} value={reason}/>
+      <Text style={styles.text1}>starting_date</Text>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setStarting_date(e)} value={starting_date}/>
+      <Text style={styles.text1}>ending_date</Text>
+      <TextInput style={styles.inputs} onChangeText={(e)=>setEnding_date(e)} value={ending_date}/>
+      <Button title='Add' onPress={()=>handleReg()} />
       
-   
-      <View style={styles.button}>
-      <Button title='register' onPress={()=>handleReg()} />
-      
-      </View>
-      <Text>if you have an account <Text onPress={handleClick} style={styles.text1}>Click here!</Text></Text>
+       
     </View>
-   
+    
     </SafeAreaView>
     
   );
@@ -72,10 +65,6 @@ const styles = StyleSheet.create({
    
     
   },
-  text1:{
-color:'red',
-backgroundColor:'blue'
-  },
   text:{
   
   backgroundColor:'blue',
@@ -92,7 +81,6 @@ flex:2,
 
   },
   inputs:{
-   
     backgroundColor: '#ffffff',
     borderColor: '#000000',
     borderWidth: 1,
@@ -104,10 +92,10 @@ flex:2,
     padding: 8,
     margin:10,
     
-  
+    textAlign: 'center',
   },
 text1:{
-color:'black',
+color:'blue',
 marginLeft:10,
 
 },
@@ -125,9 +113,7 @@ backgroundColor:'lightseagreen',
 justifyContent:'center',
 height:40,
 width:100,
-},
-wel:{
-backgroundColor:''
 }
+
 
 });
